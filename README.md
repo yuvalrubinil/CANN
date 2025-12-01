@@ -1,2 +1,46 @@
-# CANN
-CUDA Accelerated Neural Networks: This is a lightweight C++ library for GPU-accelerated neural networks training. Supports dense layers, convolutional layers (partial), and multiple optimizers, with Python bindings via PyBind11.
+![CANN Logo]()
+# CANN - CUDA Accelerated Neural Networks
+A lightweight C++ library for GPU-accelerated neural networks training. Supports dense layers, convolutional layers (partial), and multiple optimizers, with Python bindings via PyBind11.
+
+# Features
+
+1. Fully connected (dense) layers** for building neural networks  
+2. Convolutional layers (partial support; multi-layer backpropagation in development)  
+3. Optimizers: SGD, Minibatch, Momentum, with RMSProp in development  
+4. Python bindings** via PyBind11 for seamless integration with Python projects  
+5. Modular design** for easy extension and creation of custom layers  
+6. Check out `layers/`, `optimizers/`, and `tensor.cuh` for the full list of supported operations
+
+
+# About
+I'm a cs student with a strong interest in the field of deep learning. During my own private projects I have faced many preformance issues when dealing with Convolutional Neural Networks or even with regualr ones. The performance bottlenecks led me into this project with two main goals:
+1) Learn CUDA - so I can design and customize my own gpu accelerated operations.
+2) Create code that can be used for more deep learning projects in the future.
+ 
+# How to use
+1. Extarct the files into your project directory under 'cata' dir.
+2. Add to your project:  ops.cuh & tensor.cuh from 'cata'.
+3. Add to your project: all the files from 'ops' & 'tensor' dirs.
+4. Place all files under one 'cata' filter in the solution explorer (optional).
+5. Include:
+   ```cpp
+    #include "cata/tensor.cuh"
+    #include "cata/ops.cuh"
+6. Have fun!
+
+# Code Sample
+```cpp
+  #include <iostream>
+  #include "cata/tensor.cuh"
+  #include "cata/ops.cuh"
+  
+  int main() {
+      std::vector<int> shape = { 3 };
+      Tensor v(shape, 1.0f);  // Fill with 1.0
+      Tensor u(shape, 2.0f);  // Fill with 2.0
+      std::cout << v.to_string() << std::endl;
+      std::cout << u.to_string() << std::endl;
+      std::cout << dotCuda(u, v) << std::endl;
+      return 0;
+  }
+

@@ -1,2 +1,2 @@
 # CANN
-CUDA Accelerated Neural Networks A lightweight C++ library for GPU-accelerated tensor computations and neural network training. Supports dense layers, convolutional layers (partial), and multiple optimizers, with Python bindings via PyBind11.
+CUDA Accelerated Neural Networks: This is a lightweight C++ library for GPU-accelerated neural networks training. Supports dense layers, convolutional layers (partial), and multiple optimizers, with Python bindings via PyBind11.

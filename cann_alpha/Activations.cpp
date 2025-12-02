@@ -1,6 +1,6 @@
 #include <string>
 #include "ActivationFunc.h"
-#include "cata/ops.cuh"
+#include "../cata/ops.cuh"
 
 
 class Sigmoid : public ActivationFunc {

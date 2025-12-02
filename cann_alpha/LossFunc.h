@@ -1,5 +1,5 @@
 #pragma once
-#include "cata/tensor.cuh"
+#include "../cata/tensor.cuh"
 
 class LossFunc {
 public:

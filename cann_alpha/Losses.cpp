@@ -1,5 +1,5 @@
 #include "LossFunc.h"
-#include "cata/ops.cuh"
+#include "../cata/ops.cuh"
 
 class MSE : public LossFunc {
 public:

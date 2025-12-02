@@ -42,9 +42,7 @@ pip install -i https://test.pypi.org/simple/ cann-alpha
 
 # Code Samples
 This example demonstrates how to create, train, and test a simple network using `cann_alpha`.  
-**Note1:** Replace the dataset placeholder with your actual dataset.  
-**Note2:** Replace the KERNELS, KERNELS_SHAPE placeholders with your desired kernels.  
-**Note3:** The right formats for these are explained in the next code samples.
+> **Note1:** Replace the placeholders according to your desire, the right formats for these parameters are explianed in the next code samples.  
 
 ```python
 import cann_alpha as cann

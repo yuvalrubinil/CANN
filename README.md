@@ -21,9 +21,24 @@ Built on C++ and CUDA for maximum performance. Supports fully connected layers, 
 I am a computer science student with a strong interest in deep learning. I created CANN for two main reasons:
 1. To learn about neural networks and GPU-accelerated computation.
 2. To develop reusable code that can be applied in future deep learning projects.
- 
-# How to use
-???
+
+#Requirements
+To run this project, ensure your environment meets the following requirements:
+CUDA-Enabled GPU:
+- NVIDIA GPU with CUDA support.
+- Latest NVIDIA driver installed.
+- CUDA Toolkit v13.0.
+> **Note:** This project is GPU-accelerated. It will not run effectively, if at all, without a properly configured CUDA environment.
+Python:
+- Python 3.12 (64-bit).
+Operating System:
+- Windows 10 or 11 (64-bit).
+
+# Installation
+You can install the package from TestPyPI using the following command:
+```bash
+pip install -i https://test.pypi.org/simple/ cann-alpha
+
 
 # Code Sample
 ???

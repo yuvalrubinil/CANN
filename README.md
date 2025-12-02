@@ -38,7 +38,7 @@ To run this project, ensure your environment meets the following requirements:
 You can install the package from TestPyPI using the following command:
 ```bash
 pip install -i https://test.pypi.org/simple/ cann-alpha
-
+```
 
 # Code Sample
 ???

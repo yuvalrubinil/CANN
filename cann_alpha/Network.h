@@ -2,10 +2,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "cata/tensor.cuh"
-#include "Layer.h"
-#include "InputLayer.h"
-#include "OutputLayer.h"
-#include "Optimizer.h"
+#include "layers/Layer.h"
+#include "layers/InputLayer.h"
+#include "layers/OutputLayer.h"
+#include "optimizers/Optimizer.h"
 
 namespace py = pybind11;
 

@@ -2,7 +2,7 @@
 #include "cata/ops.cuh"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "ConvolutionLayer.h"
+#include "layers/ConvolutionLayer.h"
 #include <iostream>
 
 namespace py = pybind11;

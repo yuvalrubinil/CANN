@@ -12,15 +12,10 @@ Built on C++ and CUDA for maximum performance. Supports fully connected layers, 
 6. Check out `cann_alpha/Network.h`, `cann_alpha/optimizers/Optimizers.cpp`, and `cann_alpha/layers` for the full list of supported operations
 
 # In Development
-1. Multi-layer backpropagation of convolutional layers - right now only one is supported.
-2. More optimizers: RMSProp, Adam, etc.
-3. Dropout mechanizem.
-4. Python 3.13 and 3.14 support - right now only 3.12 is supported.
-
-# About
-I am a computer science student with a strong interest in deep learning. I created CANN for two main reasons:
-1. To learn about neural networks and GPU-accelerated computation.
-2. To develop reusable code that can be applied in future deep learning projects.
+- [ ] Multi-layer backpropagation of convolutional layers - right now only one is supported.
+- [ ] More optimizers: RMSProp, Adam, etc.
+- [ ] Dropout mechanizem.
+- [ ] Python 3.13 and 3.14 support - right now only 3.12 is supported.
 
 ## Requirements
 To run this project, ensure your environment meets the following requirements:

@@ -40,8 +40,60 @@ You can install the package from TestPyPI using the following command:
 pip install -i https://test.pypi.org/simple/ cann-alpha
 ```
 
-# Code Sample
+# Code Samples
+## This is an example of how to prepare the MNIST dataset for `cann`.  
+> **Note:** This is just an example; you can use your own datasets in the same format.
+```python
+def build_dataset():
+    import numpy as np
+    import requests
 
+    # Download the MNIST dataset
+    url = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
+    r = requests.get(url)
+    open("mnist.npz", "wb").write(r.content)
+
+    # Load the dataset
+    mnist = np.load("mnist.npz")
+    train_images, train_labels = mnist["x_train"], mnist["y_train"]
+    test_images, test_labels = mnist["x_test"], mnist["y_test"]
+
+    # Helper function to convert images and labels into the required format
+    def create_dataset(images, labels):
+        dataset = []
+        for img, label in zip(images, labels):
+            flattened_img = (img / 255.0).flatten().tolist()  # Normalize and flatten
+            img_shape = [1, 28, 28]  # Channels, height, width
+            dataset.append((flattened_img, img_shape, int(label)))
+        return dataset
+
+    train_dataset = create_dataset(train_images, train_labels)
+    test_dataset = create_dataset(test_images, test_labels)
+
+    return train_dataset, test_dataset
+
+# Example usage
+train_set, test_set = build_dataset()
+```
+## Define convolutional kernels
+```python
+# Define convolutional kernels
+LAPLACIAN = [
+     0,  1,  0,
+     1, -4,  1,
+     0,  1,  0
+]
+
+CORNER = [
+     1, -1,  0,
+    -1,  1,  0,
+     0,  0,  0
+]
+
+KERNELS_SHAPE = [2, 3, 3]  # 2 kernels, each 3x3
+KERNELS = LAPLACIAN + CORNER
+```
+## Build the network and run
 ```python
 import cann_alpha as cann
 
@@ -63,5 +115,5 @@ net.train(train_set, epochs=5)
 
 accuracy = net.test(test_set)
 print(f"Test Accuracy: {accuracy}")
-
+```
 

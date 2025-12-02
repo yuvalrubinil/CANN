@@ -41,5 +41,27 @@ pip install -i https://test.pypi.org/simple/ cann-alpha
 ```
 
 # Code Sample
-???
+
+```python
+import cann_alpha as cann
+
+config = [
+    {"type": "InputLayer", "input_shape": [1, 28, 28]},
+    # Provide KERNELS and KERNELS_SHAPE in the required format
+    {"type": "ConvLayer", "kernels": KERNELS, "kernels_shape": KERNELS_SHAPE, "pool_mode": 'm', "pool_size": 2, "stride": 1, "activation_function": "relu", "conv_lr": 0.1},
+    {"type": "NeuralLayer", "layer_size": 512, "activation_function": "relu", "weights_init_method": "he_uniform"},
+    {"type": "NeuralLayer", "layer_size": 512, "activation_function": "relu", "weights_init_method": "he_uniform"},
+    {"type": "OutputLayer", "layer_size": 10, "activation_function": "softmax", "weights_init_method": "xavier"}
+]
+
+net = cann.Network(config, loss="cce", lr=0.01, batch_size=16, optimizer="gd")
+
+# Load or prepare your dataset in the required format
+train_set, test_set = ...  # Replace with your dataset
+
+net.train(train_set, epochs=5)
+
+accuracy = net.test(test_set)
+print(f"Test Accuracy: {accuracy}")
+
 

@@ -15,6 +15,7 @@ Built on C++ and CUDA for maximum performance. Supports fully connected layers, 
 1. Multi-layer backpropagation of convolutional layers - right now only one is supported.
 2. More optimizers: RMSProp, Adam, etc.
 3. Dropout mechanizem.
+4. Python 3.13 and 3.14 support - right now only 3.12 is supported.
 
 # About
 I am a computer science student with a strong interest in deep learning. I created CANN for two main reasons:

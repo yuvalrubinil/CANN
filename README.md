@@ -41,7 +41,32 @@ pip install -i https://test.pypi.org/simple/ cann-alpha
 ```
 
 # Code Samples
-## This is an example of how to prepare the MNIST dataset for `cann`.  
+This example demonstrates how to create, train, and test a simple network using `cann_alpha`.  
+> **Note:** Replace the dataset placeholder with your actual dataset in the required format (explained below).
+```python
+import cann_alpha as cann
+
+config = [
+    {"type": "InputLayer", "input_shape": [1, 28, 28]},
+    # Provide KERNELS and KERNELS_SHAPE in the required format
+    {"type": "ConvLayer", "kernels": KERNELS, "kernels_shape": KERNELS_SHAPE, "pool_mode": 'm', "pool_size": 2, "stride": 1, "activation_function": "relu", "conv_lr": 0.1},
+    {"type": "NeuralLayer", "layer_size": 512, "activation_function": "relu", "weights_init_method": "he_uniform"},
+    {"type": "NeuralLayer", "layer_size": 512, "activation_function": "relu", "weights_init_method": "he_uniform"},
+    {"type": "OutputLayer", "layer_size": 10, "activation_function": "softmax", "weights_init_method": "xavier"}
+]
+
+net = cann.Network(config, loss="cce", lr=0.01, batch_size=16, optimizer="gd")
+
+# Load or prepare your dataset in the required format
+train_set, test_set = ...  # Replace with your dataset
+
+net.train(train_set, epochs=5)
+
+accuracy = net.test(test_set)
+print(f"Test Accuracy: {accuracy}")
+```
+
+This is an example of how to prepare the MNIST dataset for `cann`.  
 > **Note:** This is just an example; you can use your own datasets in the same format.
 ```python
 def build_dataset():
@@ -75,7 +100,8 @@ def build_dataset():
 # Example usage
 train_set, test_set = build_dataset()
 ```
-## Define convolutional kernels
+
+Define convolutional kernels
 ```python
 # Define convolutional kernels
 LAPLACIAN = [
@@ -93,27 +119,5 @@ CORNER = [
 KERNELS_SHAPE = [2, 3, 3]  # 2 kernels, each 3x3
 KERNELS = LAPLACIAN + CORNER
 ```
-## Build the network and run
-```python
-import cann_alpha as cann
 
-config = [
-    {"type": "InputLayer", "input_shape": [1, 28, 28]},
-    # Provide KERNELS and KERNELS_SHAPE in the required format
-    {"type": "ConvLayer", "kernels": KERNELS, "kernels_shape": KERNELS_SHAPE, "pool_mode": 'm', "pool_size": 2, "stride": 1, "activation_function": "relu", "conv_lr": 0.1},
-    {"type": "NeuralLayer", "layer_size": 512, "activation_function": "relu", "weights_init_method": "he_uniform"},
-    {"type": "NeuralLayer", "layer_size": 512, "activation_function": "relu", "weights_init_method": "he_uniform"},
-    {"type": "OutputLayer", "layer_size": 10, "activation_function": "softmax", "weights_init_method": "xavier"}
-]
-
-net = cann.Network(config, loss="cce", lr=0.01, batch_size=16, optimizer="gd")
-
-# Load or prepare your dataset in the required format
-train_set, test_set = ...  # Replace with your dataset
-
-net.train(train_set, epochs=5)
-
-accuracy = net.test(test_set)
-print(f"Test Accuracy: {accuracy}")
-```
 

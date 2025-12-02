@@ -1,7 +1,7 @@
 #pragma once
 #include <stdexcept>
 #include <vector>
-#include "Layer.h"
+#include "../layers/Layer.h"
 
 class Optimizer {
 public:

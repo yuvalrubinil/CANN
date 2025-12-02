@@ -42,14 +42,16 @@ pip install -i https://test.pypi.org/simple/ cann-alpha
 
 # Code Samples
 This example demonstrates how to create, train, and test a simple network using `cann_alpha`.  
-> **Note:** Replace the dataset placeholder with your actual dataset in the required format (explained below).
+> **Note:** Replace the dataset placeholder with your actual dataset.
+> Replace the KERNELS, KERNELS_SHAPE placeholders with your desired kernels.
+> The right formats for these explained in the next code samples.
 ```python
 import cann_alpha as cann
 
 config = [
     {"type": "InputLayer", "input_shape": [1, 28, 28]},
     # Provide KERNELS and KERNELS_SHAPE in the required format
-    {"type": "ConvLayer", "kernels": KERNELS, "kernels_shape": KERNELS_SHAPE, "pool_mode": 'm', "pool_size": 2, "stride": 1, "activation_function": "relu", "conv_lr": 0.1},
+    {"type": "ConvLayer", "kernels": ..., "kernels_shape": ..., "pool_mode": 'm', "pool_size": 2, "stride": 1, "activation_function": "relu", "conv_lr": 0.1},
     {"type": "NeuralLayer", "layer_size": 512, "activation_function": "relu", "weights_init_method": "he_uniform"},
     {"type": "NeuralLayer", "layer_size": 512, "activation_function": "relu", "weights_init_method": "he_uniform"},
     {"type": "OutputLayer", "layer_size": 10, "activation_function": "softmax", "weights_init_method": "xavier"}

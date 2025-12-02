@@ -1,5 +1,5 @@
 #include "ConvolutionLayer.h"
-#include "cata/ops.cuh"
+#include "../cata/ops.cuh"
 #include "NeuralLayer.h"
 #include "InputLayer.h"
 #include <sstream>

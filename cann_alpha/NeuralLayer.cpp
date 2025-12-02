@@ -1,5 +1,5 @@
 #include "NeuralLayer.h"
-#include "cata/ops.cuh"
+#include "../cata/ops.cuh"
 #include <iostream>
 
 ActivationFunc* loadActivationFunc(std::string funcName);

@@ -1,5 +1,5 @@
 #include "OutputLayer.h"
-#include "cata/ops.cuh"
+#include "../cata/ops.cuh"
 #include <iostream>
 
 LossFunc* loadLossFunc(std::string funcName);

@@ -1,6 +1,6 @@
 #pragma once
 #include "NeuralLayer.h"
-#include "LossFunc.h"
+#include "../functions/LossFunc.h"
 
 class OutputLayer: public NeuralLayer
 {

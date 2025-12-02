@@ -1,6 +1,6 @@
 #pragma once
 #include <stdexcept>
-#include "cata/tensor.cuh"
+#include "../cata/tensor.cuh"
 #include <vector>
 
 class Layer {

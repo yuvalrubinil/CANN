@@ -1,6 +1,6 @@
 #pragma once
 #include "Layer.h"
-#include "ActivationFunc.h"
+#include "../functions/ActivationFunc.h"
 
 class NeuralLayer : public Layer {
 protected:

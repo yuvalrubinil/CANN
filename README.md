@@ -69,6 +69,7 @@ print(f"Test Accuracy: {accuracy}")
 
 This is an example of how to prepare the MNIST dataset for `cann`.  
 > **Note:** This is just an example; you can use your own datasets in the same format.
+
 ```python
 def build_dataset():
     import numpy as np

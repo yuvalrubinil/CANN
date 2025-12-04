@@ -1,1 +1,11 @@
-
+*.sln
+*.md
+*.user
+*.filters
+*.vcxproj
+x64/
+dist/
+CANN/
+cann_alpha/Release
+.vs/
+main.cpp

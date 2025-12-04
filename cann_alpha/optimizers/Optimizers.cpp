@@ -42,6 +42,24 @@ public:
     }
 };
 
+class Adagrad : public Optimizer {
+public:
+
+    Adagrad::Adagrad(std::vector<Layer*>* layers, float learningRate) : Optimizer(layers, learningRate) {}
+
+    void Adagrad::calcOptGrads(Layer* layer) override {
+        int n = (int)layer->optGrads.size();
+        for (int i = 0; i < n; i++)
+            accumulatedSquersCuda(*layer->optGrads[i], *layer->grads[i]); //second param is the newly calculted der, using it to write the accumulated squers to the first param.
+    }
+
+    void Adagrad::subtractGrads(Layer* layer) override {
+        int n = (int)layer->optGrads.size();
+        for (int i = 0; i < n; i++)
+            adagradSubtractionCuda(*layer->params[i], *layer->optGrads[i], *layer->grads[i], this->learningRate);//third param is the newly calculted der, second is the accumulated squers, writing to first.
+    }
+};
+
 class RMSProp : public Optimizer {
 public:
     float beta = 0.9f;
@@ -69,6 +87,8 @@ Optimizer* loadOptimizer(std::string optName, std::vector<Layer*>* layers, float
         return new GD(layers, learningRate);
     else if (optName == "momentum")
         return new Momentum(layers, learningRate, beta);
+    else if (optName == "adagrad")
+        return new Adagrad(layers, learningRate);
     else if (optName == "rms_prop")
         return new RMSProp(layers, learningRate, beta);
     throw std::invalid_argument("Unknown optimizer: " + optName);

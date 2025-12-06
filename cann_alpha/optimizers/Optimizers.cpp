@@ -81,6 +81,49 @@ public:
     }
 };
 
+class Adam : public Optimizer {
+public:
+    float beta1 = 0.9f;
+    float beta2 = 0.999f;
+    int t = 0;
+
+    Adam::Adam(std::vector<Layer*>* layers, float learningRate, float beta1 = 0.9f, float beta2 = 0.999f) : Optimizer(layers, learningRate) {
+        this->beta1 = beta1;
+        this->beta2 = beta2;
+    }
+
+    void Adam::buildOptGrads(Layer* layer) override{
+        int n = (int)layer->grads.size();
+        for (int i = 0; i < n; i++) {
+            int* shape = layer->grads[i]->getShape();
+            int ndim = layer->grads[i]->getNdim();
+            layer->optGrads.push_back(new Tensor(shape, ndim, 0.0f)); // V grad
+            layer->optGrads.push_back(new Tensor(shape, ndim, 0.0f)); // S grad
+        }
+    }
+
+    void Adam::calcOptGrads(Layer* layer) override {
+        int n = (int)layer->grads.size();
+        for (int i = 0; i < n; i++) {
+            Tensor* v = layer->optGrads[2*i];
+            Tensor* s = layer->optGrads[2*i+1];
+            momentumCuda(*v, *layer->grads[i], this->beta1);
+            momentumSqueredCuda(*s, *layer->grads[i], this->beta2);
+        }
+        ++t;
+    }
+
+    void Adam::subtractGrads(Layer* layer) override {
+        int n = (int)layer->params.size();
+        for (int i = 0; i < n; i++) {
+            Tensor* v = layer->optGrads[2*i];
+            Tensor* s = layer->optGrads[2*i + 1];
+            adamSubtractionCuda(*layer->params[i], *s, *v, this->learningRate, this->beta1, this->beta2, this->t);
+
+        }
+    }
+};
+
 
 Optimizer* loadOptimizer(std::string optName, std::vector<Layer*>* layers, float learningRate, float beta=0.9f) {
     if (optName == "gd")
@@ -91,5 +134,7 @@ Optimizer* loadOptimizer(std::string optName, std::vector<Layer*>* layers, float
         return new Adagrad(layers, learningRate);
     else if (optName == "rms_prop")
         return new RMSProp(layers, learningRate, beta);
+    else if (optName == "adam")
+        return new Adam(layers, learningRate);
     throw std::invalid_argument("Unknown optimizer: " + optName);
 }

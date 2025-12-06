@@ -30,15 +30,15 @@ FetchContent_MakeAvailable(pybind11)
 # -----------------------------
 set(SOURCES
     cann_alpha/Network.cpp
-    cann_alpha/Layer.cpp
-    cann_alpha/InputLayer.cpp
-    cann_alpha/OutputLayer.cpp
-    cann_alpha/NeuralLayer.cpp
-    cann_alpha/Activations.cpp
-    cann_alpha/Losses.cpp
-    cann_alpha/ConvolutionLayer.cpp
-    cann_alpha/Optimizer.cpp
-    cann_alpha/Optimizers.cpp
+    cann_alpha/layers/Layer.cpp
+    cann_alpha/layers/InputLayer.cpp
+    cann_alpha/layers/OutputLayer.cpp
+    cann_alpha/layers/NeuralLayer.cpp
+    cann_alpha/functions/Activations.cpp
+    cann_alpha/functions/Losses.cpp
+    cann_alpha/layers/ConvolutionLayer.cpp
+    cann_alpha/optimizers/Optimizer.cpp
+    cann_alpha/optimizers/Optimizers.cpp
     bindings.cpp
 )
 

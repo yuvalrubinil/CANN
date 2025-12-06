@@ -1,6 +1,6 @@
 [project]
 name = "cann_alpha"                # PyPI distribution name
-version = "0.3.1"
+version = "0.3.2"
 description = "A lightweight Python library for training neural networks with GPU acceleration. Built on C++ and CUDA for maximum performance."
 requires-python = ">=3.8"
 authors = [{ name = "Yuval Rubin" }]

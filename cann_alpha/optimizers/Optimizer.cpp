@@ -3,6 +3,7 @@
 #include "device_launch_parameters.h"
 #include "Optimizer.h"
 
+
 Optimizer::Optimizer(std::vector<Layer*>* layers, float learningRate) {
 	this->layers = layers;
 	this->learningRate = learningRate;

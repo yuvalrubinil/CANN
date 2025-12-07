@@ -9,7 +9,7 @@
 
 namespace py = pybind11;
 
-Optimizer* loadOptimizer(std::string optName, std::vector<Layer*>* layers, float learningRate, float beta = 0.9f);
+Optimizer* loadOptimizer(std::string optName, std::vector<Layer*>* layers, float learningRate, int batchSize, float beta = 0.9f);
 
 typedef struct DataSample {
 	Tensor* data;
@@ -39,7 +39,6 @@ private:
 	OutputLayer* outputLayer = nullptr;
 	Tensor* outputVector = nullptr;
 	Optimizer* optimizer = nullptr;
-	int batchSize = 32;
 
 	void calcGrads();
 	void subtractGrads(float batchScaler);

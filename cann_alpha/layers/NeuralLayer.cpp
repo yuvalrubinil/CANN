@@ -57,21 +57,6 @@ void NeuralLayer::calcGrads() {
 	plusCuda(*this->dc_db, *this->dc_dz, *this->dc_db); 
 }
 
-void NeuralLayer::avgGrads(float batchSize) {
-	divideByScalerCuda(*this->dc_dw, *this->dc_dw, batchSize);
-	divideByScalerCuda(*this->dc_db, *this->dc_db, batchSize);
-}
-
-void NeuralLayer::resetGrads() {
-	fillTensorCuda(*this->dc_dw, 0.0f);
-	fillTensorCuda(*this->dc_db, 0.0f);
-}
-
-void NeuralLayer::subtractGrads(float learningRate) {
-	subtractByScaleCuda(*this->weights, *this->dc_dw, learningRate); //writes to weights
-	subtractByScaleCuda(*this->biases, *this->dc_db, learningRate); //writes to biases
-}
-
 std::string NeuralLayer::to_string() {
 	return "NeuralLayer:\n" + this->activations->to_string();
 }

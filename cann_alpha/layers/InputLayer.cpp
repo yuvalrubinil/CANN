@@ -27,15 +27,14 @@ void InputLayer::buildGrads() {}
 void InputLayer::build() {}
 void InputLayer::calcLayer() {}
 void InputLayer::calcGrads() {}
-void InputLayer::avgGrads(float batchSize) {}
-void InputLayer::resetGrads() {}
-void InputLayer::subtractGrads(float learningRate) {}
+
 std::string InputLayer::to_string() {
     //printf("%d\n", this->activations);
     if (this->activations)
         return "InputLayer:\n" + this->activations->to_string();
     return "InputLayer:\n   null -> input Tensor was freed\n";
 }
+
 int* InputLayer::getInputShape() {
     return this->inputShape;
 }

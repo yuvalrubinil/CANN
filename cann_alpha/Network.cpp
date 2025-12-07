@@ -39,7 +39,7 @@ Layer* createLayer(py::dict layerConfig, std::string lossFunction="") {
 
 
 Network::Network(py::list layersConfig, std::string lossFunction, float learningRate, int batchSize, std::string optimizer) {
-	this->optimizer = loadOptimizer(optimizer, &this->layers, learningRate);
+	this->optimizer = loadOptimizer(optimizer, &this->layers, learningRate, batchSize);
 	size_t layersCount = layersConfig.size();
 	this->inputLayer = (InputLayer*)createLayer(layersConfig[0], lossFunction);
 	layers.push_back(this->inputLayer);
@@ -50,7 +50,6 @@ Network::Network(py::list layersConfig, std::string lossFunction, float learning
 	}
 	this->outputLayer = (OutputLayer*)this->layers[layersCount - 1];
 	this->outputVector = this->outputLayer->activations;
-	this->batchSize = batchSize;
 }
 
 void Network::loadDataset(py::list dataset) {
@@ -82,10 +81,9 @@ void Network::calcGrads() {
 
 void Network::subtractGrads(float batchScaler) {
 	for (Layer* layer : this->layers) {
-		layer->avgGrads(this->batchSize);
 		this->optimizer->calcOptGrads(layer);
 		this->optimizer->subtractGrads(layer);
-		layer->resetGrads();
+		this->optimizer->resetLayerGrads(layer);
 	}
 }
 
@@ -93,8 +91,8 @@ void Network::backPropagation(int expectedOutput, int* inBatchIndex) {
 	this->outputLayer->expectedOutput = expectedOutput;
 	this->calcGrads();
 	++(*inBatchIndex);
-	if (*inBatchIndex == this->batchSize) {
-		this->subtractGrads(this->batchSize);
+	if (*inBatchIndex == this->optimizer->batchSize) {
+		this->subtractGrads(this->optimizer->batchSize);
 		*inBatchIndex = 0;
 	}
 }
@@ -117,7 +115,7 @@ void Network::train(py::list dataset, int epochs) {
 			++i;
 			if (++j % tenPrecent == 0) std::cout << (10 * j / tenPrecent) << "% Loss: " << (loss / (float)i) << std::endl;
 		}
-		if (inBatchIndex && (inBatchIndex < this->batchSize)) this->subtractGrads(inBatchIndex); // subtract the leftover.
+		if (inBatchIndex && (inBatchIndex < this->optimizer->batchSize)) this->subtractGrads(inBatchIndex); // subtract the leftover.
 	}
 }
 

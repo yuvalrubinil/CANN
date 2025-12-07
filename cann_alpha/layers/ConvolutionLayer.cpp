@@ -126,20 +126,6 @@ void ConvolutionLayer::calcGrads() {
     //nextLayer -> ConvolutionLayer will be developed later on...
 }
 
-void ConvolutionLayer::avgGrads(float batchSize) {
-    divideByScalerCuda(*this->dc_dk, *this->dc_dk, batchSize);
-    divideByScalerCuda(*this->dc_db, *this->dc_db, batchSize);
-}
-
-void ConvolutionLayer::resetGrads() {
-    fillTensorCuda(*this->dc_dk, 0.0f);
-    fillTensorCuda(*this->dc_db, 0.0f);
-}
-
-void ConvolutionLayer::subtractGrads(float learningRate) {
-    subtractByScaleCuda(*this->kernels, *this->dc_dk, learningRate * convLearningRate);
-    subtractByScaleCuda(*this->biases, *this->dc_db, learningRate);
-}
 
 std::string ConvolutionLayer::to_string() {
     std::ostringstream oss;

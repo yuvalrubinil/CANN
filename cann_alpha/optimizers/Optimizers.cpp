@@ -8,13 +8,14 @@
 class GD : public Optimizer {
 public:
 
-    GD::GD(std::vector<Layer*>* layers, float learningRate) : Optimizer(layers, learningRate) {}
+    GD::GD(std::vector<Layer*>* layers, float learningRate, int batchSize) : Optimizer(layers, learningRate, batchSize) {}
 
     void GD::buildOptGrads(Layer* layer) override {} //No optGrads in GD.
 
     void GD::calcOptGrads(Layer* layer) override {} //No optGrads in GD.
 
     void GD::subtractGrads(Layer* layer) override {
+        this->avgLayerGrads(layer);
         int n = (int)layer->grads.size();
         for (int i = 0; i < n; i++)
             subtractByScaleCuda(*layer->params[i], *layer->grads[i], this->learningRate); // w -= lr * grad
@@ -25,11 +26,12 @@ class Momentum: public Optimizer {
 public:
     float beta = 0.9f;
 
-    Momentum::Momentum(std::vector<Layer*>* layers, float learningRate, float beta=0.9f) : Optimizer(layers, learningRate) {
+    Momentum::Momentum(std::vector<Layer*>* layers, float learningRate, int batchSize, float beta=0.9f) : Optimizer(layers, learningRate, batchSize) {
         this->beta = beta;
     }
 
     void Momentum::calcOptGrads(Layer* layer) override{
+        this->avgLayerGrads(layer);
         int n = (int)layer->optGrads.size();
         for (int i = 0; i < n; i++)
             momentumCuda(*layer->optGrads[i] , *layer->grads[i], this->beta); //second param is the newly calculted der, using it to write the momentum to the first param.
@@ -45,7 +47,7 @@ public:
 class Adagrad : public Optimizer {
 public:
 
-    Adagrad::Adagrad(std::vector<Layer*>* layers, float learningRate) : Optimizer(layers, learningRate) {}
+    Adagrad::Adagrad(std::vector<Layer*>* layers, float learningRate, int batchSize) : Optimizer(layers, learningRate, batchSize) {}
 
     void Adagrad::calcOptGrads(Layer* layer) override {
         int n = (int)layer->optGrads.size();
@@ -64,11 +66,12 @@ class RMSProp : public Optimizer {
 public:
     float beta = 0.9f;
 
-    RMSProp::RMSProp(std::vector<Layer*>* layers, float learningRate, float beta=0.9f) : Optimizer(layers, learningRate) {
+    RMSProp::RMSProp(std::vector<Layer*>* layers, float learningRate, int batchSize, float beta=0.9f) : Optimizer(layers, learningRate, batchSize) {
         this->beta = beta;
     }
 
     void RMSProp::calcOptGrads(Layer* layer) override {
+        this->avgLayerGrads(layer);
         int n = (int)layer->optGrads.size();
         for (int i = 0; i < n; i++)
             momentumSqueredCuda(*layer->optGrads[i], *layer->grads[i], this->beta); //second param is the newly calculted der, using it to write the momentum to the first param.
@@ -87,7 +90,7 @@ public:
     float beta2 = 0.999f;
     int t = 0;
 
-    Adam::Adam(std::vector<Layer*>* layers, float learningRate, float beta1 = 0.9f, float beta2 = 0.999f) : Optimizer(layers, learningRate) {
+    Adam::Adam(std::vector<Layer*>* layers, float learningRate, int batchSize, float beta1 = 0.9f, float beta2 = 0.999f) : Optimizer(layers, learningRate, batchSize) {
         this->beta1 = beta1;
         this->beta2 = beta2;
     }
@@ -103,6 +106,7 @@ public:
     }
 
     void Adam::calcOptGrads(Layer* layer) override {
+        this->avgLayerGrads(layer);
         int n = (int)layer->grads.size();
         for (int i = 0; i < n; i++) {
             Tensor* v = layer->optGrads[2*i];
@@ -125,16 +129,16 @@ public:
 };
 
 
-Optimizer* loadOptimizer(std::string optName, std::vector<Layer*>* layers, float learningRate, float beta=0.9f) {
+Optimizer* loadOptimizer(std::string optName, std::vector<Layer*>* layers, float learningRate, int batchSize, float beta=0.9f) {
     if (optName == "gd")
-        return new GD(layers, learningRate);
+        return new GD(layers, learningRate, batchSize);
     else if (optName == "momentum")
-        return new Momentum(layers, learningRate, beta);
+        return new Momentum(layers, learningRate, batchSize, beta);
     else if (optName == "adagrad")
-        return new Adagrad(layers, learningRate);
+        return new Adagrad(layers, learningRate, batchSize);
     else if (optName == "rms_prop")
-        return new RMSProp(layers, learningRate, beta);
+        return new RMSProp(layers, learningRate, batchSize, beta);
     else if (optName == "adam")
-        return new Adam(layers, learningRate);
+        return new Adam(layers, learningRate, batchSize);
     throw std::invalid_argument("Unknown optimizer: " + optName);
 }

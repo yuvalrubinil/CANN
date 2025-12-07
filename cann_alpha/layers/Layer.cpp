@@ -1,6 +1,7 @@
 #pragma once
 #include "Layer.h" 
 #include <iostream>
+#include "../cata/ops.cuh"
 
 Layer::Layer(int size) {
 	this->size = size;
@@ -35,6 +36,7 @@ void Layer::buildLayer() {
 	this->buildGrads();
 	this->build();
 }
+
 
 std::string Layer::to_string() {
 	return this->activations->to_string();

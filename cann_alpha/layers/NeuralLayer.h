@@ -22,9 +22,6 @@ public:
 	void build() override;
 	void calcLayer() override;
 	void calcGrads() override;
-	void avgGrads(float batchSize) override;
-	void resetGrads() override;
-	void subtractGrads(float learningRate) override;
 	std::string to_string() override;
 };
 

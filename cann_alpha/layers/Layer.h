@@ -27,7 +27,4 @@ public:
 	virtual void build() = 0;
 	virtual void calcLayer() = 0;
 	virtual void calcGrads() = 0;
-	virtual void avgGrads(float batchSize) = 0;
-	virtual void resetGrads() = 0;
-	virtual void subtractGrads(float learningRate) = 0;
 };

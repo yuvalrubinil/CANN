@@ -114,10 +114,10 @@ public:
             momentumCuda(*v, *layer->grads[i], this->beta1);
             momentumSqueredCuda(*s, *layer->grads[i], this->beta2);
         }
-        ++t;
     }
 
     void Adam::subtractGrads(Layer* layer) override {
+        ++t;
         int n = (int)layer->params.size();
         for (int i = 0; i < n; i++) {
             Tensor* v = layer->optGrads[2*i];

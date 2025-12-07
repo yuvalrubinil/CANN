@@ -96,7 +96,6 @@ void momentumSqueredCuda(Tensor& v, Tensor& newV, float beta) {
     cudaDeviceSynchronize();
 }
 
-
 void rmsPropSubtractionCuda(Tensor& w, Tensor& s, Tensor& newV, float learningRate) {
     int n = newV.getSize();
     int threadsPerBlock = std::min(BLOCK_MAX_SIZE, n);

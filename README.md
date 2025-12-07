@@ -6,14 +6,14 @@ Built on C++ and CUDA for maximum performance. Supports fully connected layers, 
 # Features
 1. Fully connected layers.
 2. Convolutional layers (partial support).  
-3. Optimizers: SGD, Minibatch, Momentum.  
+3. Optimizers: SGD, MinibatchGD, Momentum, Adagrad, RMSProp, Adam.  
 4. Python bindings via PyBind11 for seamless integration with Python projects.  
 5. Modular design for easy extension and creation of custom layers.  
 6. Check out `cann_alpha/Network.h`, `cann_alpha/optimizers/Optimizers.cpp`, and `cann_alpha/layers` for the full list of supported operations
 
 # In Development
 - [ ] Multi-layer backpropagation of convolutional layers - right now only one is supported.
-- [ ] More optimizers: RMSProp, Adam, etc.
+- [x] More optimizers: RMSProp, Adam, etc.
 - [ ] Dropout mechanizem.
 - [ ] Python 3.13 and 3.14 support - right now only 3.12 is supported.
 

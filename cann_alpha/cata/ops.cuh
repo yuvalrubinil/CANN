@@ -40,6 +40,7 @@ float maxCuda(Tensor& u);
 // --- Matrix operations ---
 void matmulCuda(Tensor& A, Tensor& B, Tensor& C);
 void matvecCuda(Tensor& A, Tensor& u, Tensor& w);
+void sumChannelIntervalsCuda(Tensor& tensor, Tensor& result, int intervalSize);
 
 // --- Activations ---
 void sigmoidCuda(Tensor& u, Tensor& w);
@@ -57,6 +58,7 @@ void cceDerCuda(Tensor& y_predicted, Tensor& y_expected, Tensor& w);
 
 // --- Convolution ---
 void convolutionCuda(Tensor& tensor, Tensor& kernels, Tensor& featureMap, int paddingFrame, int stride);
+void convolutionReversedChainRuleCuda(Tensor& next_dc_dz, Tensor* pooledData, Tensor& kernels, Tensor& result, int stride, char poolMode, int poolSize);
 void poolingCuda(Tensor& featureMap, Tensor& pooledIndices, Tensor& result, char mode, int poolSize);
 void convolutionChainRuleCuda(Tensor& tensor, Tensor& pooledData, Tensor& dc_dz, Tensor& dc_db, Tensor& dc_dk,
     int paddingFrame, int stride, int kernelWidth, char poolMode, int poolSize, int k);

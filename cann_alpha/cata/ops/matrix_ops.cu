@@ -87,3 +87,53 @@ void matvecCuda(Tensor& A, Tensor& u, Tensor& w) {
     matvec << <blocks, threadsPerBlock >> > (A.getData(), u.getData(), m, n, w.getData());
     cudaDeviceSynchronize();
 }
+
+
+
+__global__ void sumChannelIntervals(float* tensor, int* tensorShape, int* tensorStrides, float* result, int* resultShape, int* resultStrides, int intervalSize) {
+    int resultMapIdx = blockIdx.z;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    bool inRange = col < resultShape[2] && row < resultShape[1];
+    if (inRange) {
+        float local_sum = 0.0f;
+        for (int i = 0; i < intervalSize; i++) {
+            int tensorIdx = (resultMapIdx * intervalSize + i) * tensorStrides[0] + row * tensorStrides[1] + col;
+            local_sum += tensor[tensorIdx];
+        }
+        result[resultMapIdx * resultStrides[0] + row * resultStrides[1] + col] = local_sum;
+    }
+}
+
+
+void sumChannelIntervalsCuda(Tensor& tensor, Tensor& result, int intervalSize) {
+    int tensorChannels = tensor.getShape()[0];
+    int tensorHeight = tensor.getShape()[1];
+    int tensorWidth = tensor.getShape()[2];
+
+    int blocksPerRow = ceilf((float)tensorWidth / TILE_SIZE);
+    int blocksPerCol = ceilf((float)tensorHeight / TILE_SIZE);
+
+    dim3 blockShape(TILE_SIZE, TILE_SIZE);
+    dim3 gridSize(blocksPerRow, blocksPerCol, (tensorChannels / intervalSize));
+
+    tensor.toDevice();
+    result.toDevice();
+
+    sumChannelIntervals << <gridSize, blockShape >> > (
+        tensor.getData(), tensor.getShape_d(), tensor.getStrides_d(),
+        result.getData(), result.getShape_d(), result.getStrides_d(), intervalSize
+        );
+
+    cudaError_t err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        printf("Launch error before sumChannelIntervalsCuda: %s\n", cudaGetErrorString(err));
+        abort();
+    }
+    cudaDeviceSynchronize();
+    err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        printf("Runtime error after sumChannelIntervalsCuda: %s\n", cudaGetErrorString(err));
+        abort();
+    }
+}

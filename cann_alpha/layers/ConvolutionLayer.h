@@ -5,7 +5,7 @@
 
 class ConvolutionLayer: public Layer
 {
-private:
+protected:
 	Tensor* biases = nullptr;
 	Tensor* kernels = nullptr;
 	Tensor* f = nullptr;  //f = func(featureMap + bias);

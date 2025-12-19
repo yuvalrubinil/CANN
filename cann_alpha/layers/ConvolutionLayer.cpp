@@ -7,7 +7,19 @@
 
 ActivationFunc* loadActivationFunc(std::string funcName);
 
-
+void convolutionGradBackStream(Tensor& next_dc_dz, Tensor* pooledData, Tensor& kernels, Tensor& dc_dz, int stride, char poolMode, int poolSize)
+{
+    int k = kernels.getShape()[0];
+    int kernelWidth = kernels.getShape()[2];
+    int dc_dzImgCount = dc_dz.getShape()[0];
+    int dc_dzHeight = dc_dz.getShape()[1];
+    int dc_dzWidth = dc_dz.getShape()[2];
+    std::vector<int> tmpShape = { k * dc_dzImgCount, dc_dzHeight, dc_dzWidth };
+    Tensor tempResult = Tensor(tmpShape);
+    convolutionReversedChainRuleCuda(next_dc_dz, pooledData, kernels, tempResult, stride, poolMode, poolSize);
+    sumChannelIntervalsCuda(tempResult, dc_dz, k);
+    tempResult.free();
+}
 
 
 ConvolutionLayer::ConvolutionLayer(Tensor* kernels, char poolMode, int poolSize, int stride, std::string activationFunction, float convLearningRate=1.f) : Layer(1) {
@@ -112,20 +124,20 @@ void ConvolutionLayer::calcLayer() {
 }
 
 void ConvolutionLayer::calcGrads() {
-    //lets assume next layer is neural for now.
-    if (NeuralLayer* nextNeural = dynamic_cast<NeuralLayer*>(this->nextLayer)) {
+    //if next layer is fully connected:
+    if (NeuralLayer* nextNeural = dynamic_cast<NeuralLayer*>(this->nextLayer))
         matvecCuda(*nextNeural->weightsTranspose, *nextNeural->dc_dz, *this->dc_dz); //writes dc_da to dc_dz
-        this->activationFunction->chainRule(*this->activations, *this->dc_dz, *this->dc_dz); //dc_dz = dc_da * da_df * df_dz
-        int kernelWidth = this->kernels->getShape()[2];
-        int kernelsCount = this->kernels->getShape()[0];
-        Tensor* pooledData = (this->poolMode == 'm') ? this->pooledIndices : this->activations;
-        convolutionChainRulePlusEqualCuda(*this->prevLayer->activations, *pooledData, *this->dc_dz, *this->dc_db, *this->dc_dk,
-            this->paddingFrame, this->stride, kernelWidth, this->poolMode, this->poolSize, kernelsCount); //adds the grads to dc_dk and dc_db
-        pooledData = nullptr;
-    }
-    //nextLayer -> ConvolutionLayer will be developed later on...
+    this->activationFunction->chainRule(*this->activations, *this->dc_dz, *this->dc_dz); //dc_dz = dc_da * da_df * df_dz
+    //if next layer is convolutional:
+    if (ConvolutionLayer* nextConv = dynamic_cast<ConvolutionLayer*>(this->nextLayer))
+        convolutionGradBackStream(*nextConv->dc_dz, nextConv->pooledIndices, *nextConv->kernels, *this->dc_dz, nextConv->stride, nextConv->poolMode, nextConv->poolSize);
+    int kernelWidth = this->kernels->getShape()[2];
+    int kernelsCount = this->kernels->getShape()[0];
+    Tensor* pooledData = (this->poolMode == 'm') ? this->pooledIndices : this->activations;
+    convolutionChainRulePlusEqualCuda(*this->prevLayer->activations, *pooledData, *this->dc_dz, *this->dc_db, *this->dc_dk,
+        this->paddingFrame, this->stride, kernelWidth, this->poolMode, this->poolSize, kernelsCount); //adds the grads to dc_dk and dc_db
+    pooledData = nullptr;
 }
-
 
 std::string ConvolutionLayer::to_string() {
     std::ostringstream oss;

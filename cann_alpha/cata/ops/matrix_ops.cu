@@ -101,6 +101,8 @@ __global__ void sumChannelIntervals(float* tensor, int* tensorShape, int* tensor
             int tensorIdx = (resultMapIdx * intervalSize + i) * tensorStrides[0] + row * tensorStrides[1] + col;
             local_sum += tensor[tensorIdx];
         }
+        if (resultMapIdx > resultShape[0] || row > resultShape[1] || col > resultShape[2])
+            printf("(%d, %d, %d) > [%d, %d, %d]\n", resultMapIdx, row, col, resultShape[0], resultShape[1], resultShape[2]);
         result[resultMapIdx * resultStrides[0] + row * resultStrides[1] + col] = local_sum;
     }
 }

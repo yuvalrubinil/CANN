@@ -496,7 +496,7 @@ __global__ void convolutionReversedChainRule(
     int tileSize = tileWidth * tileWidth;
 
     extern __shared__ float shared[];
-    float* tile = shared; // unpooled unpooled tile
+    float* tile = shared; // unpooled tile
     float* kernel_shared = shared + tileSize; // flipped kernel
 
     // flipping the kernel
@@ -545,7 +545,7 @@ __global__ void convolutionReversedChainRule(
                     val += tile[tile_r * tileWidth + tile_c] * kernel_shared[kr * kernelWidth + kc];
             }
         }
-        int outIdx = (dc_dzImgIdx * k + kernelIdx) * resultStrides[0] + unpooledY * resultStrides[1] + unpooledX;
+        int outIdx = blockIdx.z * resultStrides[0] + unpooledY * resultStrides[1] + unpooledX;
         result[outIdx] = val;
     }
 }

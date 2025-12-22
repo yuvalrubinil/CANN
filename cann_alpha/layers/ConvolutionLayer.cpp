@@ -7,18 +7,19 @@
 
 ActivationFunc* loadActivationFunc(std::string funcName);
 
-void convolutionGradBackStream(Tensor& next_dc_dz, Tensor* pooledData, Tensor& kernels, Tensor& dc_dz, int stride, char poolMode, int poolSize)
+void convolutionGradBackStream(Tensor& next_dc_dz, Tensor* pooledData, Tensor& kernels, Tensor& dc_dz, int stride, char poolMode, int poolSize, int next_k)
 {
     int k = kernels.getShape()[0];
     int kernelWidth = kernels.getShape()[2];
-    int dc_dzImgCount = dc_dz.getShape()[0];
+    int next_dc_dzImgCount = next_dc_dz.getShape()[0];
     int dc_dzHeight = dc_dz.getShape()[1];
     int dc_dzWidth = dc_dz.getShape()[2];
-    std::vector<int> tmpShape = { k * dc_dzImgCount, dc_dzHeight, dc_dzWidth };
-    Tensor tempResult = Tensor(tmpShape);
-    convolutionReversedChainRuleCuda(next_dc_dz, pooledData, kernels, tempResult, stride, poolMode, poolSize);
-    sumChannelIntervalsCuda(tempResult, dc_dz, k);
-    tempResult.free();
+    std::vector<int> tmpShape = { k * next_dc_dzImgCount, dc_dzHeight, dc_dzWidth };
+    Tensor* tempResult = new Tensor(tmpShape);
+    convolutionReversedChainRuleCuda(next_dc_dz, pooledData, kernels, *tempResult, stride, poolMode, poolSize);
+    sumChannelIntervalsCuda(*tempResult, dc_dz, next_k * k); // (next_k * k) because after the reversed conv we get a tensor with channel size: (next_dc_dz_channels * k) = (k * next_k * k)
+    tempResult->free();
+    tempResult = nullptr;
 }
 
 
@@ -129,8 +130,10 @@ void ConvolutionLayer::calcGrads() {
         matvecCuda(*nextNeural->weightsTranspose, *nextNeural->dc_dz, *this->dc_dz); //writes dc_da to dc_dz
     this->activationFunction->chainRule(*this->activations, *this->dc_dz, *this->dc_dz); //dc_dz = dc_da * da_df * df_dz
     //if next layer is convolutional:
-    if (ConvolutionLayer* nextConv = dynamic_cast<ConvolutionLayer*>(this->nextLayer))
-        convolutionGradBackStream(*nextConv->dc_dz, nextConv->pooledIndices, *nextConv->kernels, *this->dc_dz, nextConv->stride, nextConv->poolMode, nextConv->poolSize);
+    if (ConvolutionLayer* nextConv = dynamic_cast<ConvolutionLayer*>(this->nextLayer)) {
+        int next_k = nextConv->kernels->getShape()[0];
+        convolutionGradBackStream(*nextConv->dc_dz, nextConv->pooledIndices, *this->kernels, *this->dc_dz, nextConv->stride, nextConv->poolMode, nextConv->poolSize, next_k); // dc_dz = next_dc_dz * kernel
+    }
     int kernelWidth = this->kernels->getShape()[2];
     int kernelsCount = this->kernels->getShape()[0];
     Tensor* pooledData = (this->poolMode == 'm') ? this->pooledIndices : this->activations;

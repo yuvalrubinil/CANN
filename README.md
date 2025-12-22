@@ -12,7 +12,7 @@ Built on C++ and CUDA for maximum performance. Supports fully connected layers, 
 6. Check out `cann_alpha/Network.h`, `cann_alpha/optimizers/Optimizers.cpp`, and `cann_alpha/layers` for the full list of supported operations
 
 # In Development
-- [ ] Multi-layer backpropagation of convolutional layers - right now only one is supported.
+- [x] Multi-layer backpropagation of convolutional layers - right now only one is supported.
 - [x] More optimizers: RMSProp, Adam, etc.
 - [ ] Dropout mechanizem.
 - [ ] Python 3.13 and 3.14 support - right now only 3.12 is supported.

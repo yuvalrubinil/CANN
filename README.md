@@ -1,7 +1,7 @@
 ![CANN Logo](images/cann_logo.png)
 # CANN - CUDA Accelerated Neural Networks (alpha)
 A lightweight Python library for training neural networks with GPU acceleration.
-Built on C++ and CUDA for maximum performance. Supports fully connected layers, convolutional layers (partial), and multiple optimizers.
+Built on C++ and CUDA for maximum performance. Supports fully connected layers, convolutional layers, and multiple optimizers.
 
 # Features
 1. Fully connected layers.
